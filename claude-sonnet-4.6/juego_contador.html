@@ -1,0 +1,411 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@400;700;900&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  #app {
+    font-family: 'Orbitron', monospace;
+    min-height: 520px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+
+  .game-container {
+    width: 100%;
+    max-width: 480px;
+    background: var(--color-background-primary);
+    border: 2px solid var(--color-border-secondary);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .game-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 13px;
+    color: var(--color-text-primary);
+    letter-spacing: 1px;
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+  }
+
+  .game-title span {
+    display: block;
+    font-size: 9px;
+    color: var(--color-text-secondary);
+    margin-top: 4px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-card {
+    background: var(--color-background-secondary);
+    border-radius: 12px;
+    padding: 12px 8px;
+    border: 1px solid var(--color-border-tertiary);
+  }
+
+  .stat-label {
+    font-size: 8px;
+    color: var(--color-text-secondary);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--color-text-primary);
+    line-height: 1;
+  }
+
+  .stat-value.accent { color: #E24B4A; }
+  .stat-value.time { color: #1D9E75; }
+  .stat-value.max-score { color: #534AB7; }
+
+  .countdown-display {
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .countdown-text {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 28px;
+    color: var(--color-text-primary);
+    animation: pulse 0.5s ease-in-out;
+  }
+
+  .countdown-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-border-secondary);
+    display: inline-block;
+    margin: 0 3px;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(0.6); opacity: 0; }
+    60% { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-4px); }
+    40% { transform: translateX(4px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+  }
+
+  @keyframes flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .buttons-area {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn-start {
+    width: 100%;
+    padding: 14px 20px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    border: 2px solid var(--color-border-secondary);
+    border-radius: 12px;
+    background: var(--color-background-secondary);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    letter-spacing: 1px;
+  }
+
+  .btn-start:not(:disabled):hover {
+    background: var(--color-background-primary);
+    border-color: var(--color-border-primary);
+    transform: translateY(-1px);
+  }
+
+  .btn-start:not(:disabled):active {
+    transform: translateY(1px);
+  }
+
+  .btn-start:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .btn-click {
+    width: 100%;
+    padding: 22px 20px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 13px;
+    border: 2px solid #E24B4A;
+    border-radius: 14px;
+    background: transparent;
+    color: #E24B4A;
+    cursor: pointer;
+    transition: all 0.08s ease;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-click:not(:disabled):hover {
+    background: rgba(226, 75, 74, 0.08);
+  }
+
+  .btn-click:not(:disabled):active {
+    transform: scale(0.96);
+    background: rgba(226, 75, 74, 0.15);
+  }
+
+  .btn-click:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    border-color: var(--color-border-tertiary);
+    color: var(--color-text-tertiary);
+  }
+
+  .btn-click.active-game {
+    animation: none;
+  }
+
+  .result-banner {
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    line-height: 2;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+  }
+
+  .result-banner.new-record {
+    background: rgba(83, 74, 183, 0.1);
+    border: 1px solid #7F77DD;
+    color: #534AB7;
+    animation: flash 0.4s ease 3;
+  }
+
+  .result-banner.normal {
+    background: var(--color-background-secondary);
+    border: 1px solid var(--color-border-tertiary);
+    color: var(--color-text-secondary);
+  }
+
+  .time-bar-wrapper {
+    background: var(--color-background-secondary);
+    border-radius: 6px;
+    height: 6px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    border: 1px solid var(--color-border-tertiary);
+  }
+
+  .time-bar {
+    height: 100%;
+    border-radius: 6px;
+    background: #1D9E75;
+    transition: width 0.1s linear, background 0.5s;
+  }
+
+  .time-bar.warning { background: #EF9F27; }
+  .time-bar.danger { background: #E24B4A; }
+
+  .click-burst {
+    position: fixed;
+    pointer-events: none;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #E24B4A;
+    animation: burst 0.4s ease-out forwards;
+  }
+
+  @keyframes burst {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(3); opacity: 0; }
+  }
+</style>
+
+<div id="app">
+  <div class="game-container">
+    <div class="game-title">
+      JuegoContador
+      <span>click battle — 5 segundos</span>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Clicks</div>
+        <div class="stat-value accent" id="current-score">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Tiempo</div>
+        <div class="stat-value time" id="time-display">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Récord</div>
+        <div class="stat-value max-score" id="max-score">0</div>
+      </div>
+    </div>
+
+    <div class="time-bar-wrapper" id="time-bar-wrapper" style="opacity:0">
+      <div class="time-bar" id="time-bar" style="width:100%"></div>
+    </div>
+
+    <div class="countdown-display" id="countdown-area">
+      <div style="display:flex;gap:6px;align-items:center;">
+        <span class="countdown-dot"></span>
+        <span class="countdown-dot"></span>
+        <span class="countdown-dot"></span>
+      </div>
+    </div>
+
+    <div id="result-area" style="display:none"></div>
+
+    <div class="buttons-area">
+      <button class="btn-start" id="btn-start">▶ INICIAR JUEGO</button>
+      <button class="btn-click" id="btn-click" disabled>¡CLICK!</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const GAME_DURATION = 5000;
+  const COUNTDOWN = ['PREPARADOS', 'LISTOS', '¡YA!'];
+
+  let state = {
+    phase: 'idle',
+    currentScore: 0,
+    maxScore: 0,
+    timeLeft: 5,
+    gameInterval: null,
+    countdownTimeout: null,
+    startTime: null,
+    barInterval: null
+  };
+
+  const $ = id => document.getElementById(id);
+
+  function render() {
+    const s = state;
+    $('current-score').textContent = s.currentScore;
+    $('max-score').textContent = s.maxScore;
+    $('time-display').textContent = s.phase === 'playing' ? s.timeLeft + 's' : '—';
+    $('btn-start').disabled = s.phase !== 'idle';
+    $('btn-click').disabled = s.phase !== 'playing';
+
+    const bar = $('time-bar');
+    const pct = s.phase === 'playing' ? (s.timeLeft / 5) * 100 : 100;
+    bar.style.width = pct + '%';
+    bar.className = 'time-bar' + (pct < 40 ? ' warning' : '') + (pct < 20 ? ' danger' : '');
+
+    $('time-bar-wrapper').style.opacity = s.phase === 'playing' ? '1' : '0';
+    $('result-area').style.display = 'none';
+  }
+
+  function showCountdown(msgs, idx, cb) {
+    const area = $('countdown-area');
+    if (idx >= msgs.length) { cb(); return; }
+    area.innerHTML = `<div class="countdown-text">${msgs[idx]}</div>`;
+    state.countdownTimeout = setTimeout(() => showCountdown(msgs, idx + 1, cb), 1000);
+  }
+
+  function startGame() {
+    state.phase = 'countdown';
+    state.currentScore = 0;
+    render();
+
+    showCountdown(COUNTDOWN, 0, () => {
+      state.phase = 'playing';
+      state.timeLeft = 5;
+      state.startTime = Date.now();
+      render();
+
+      $('countdown-area').innerHTML = '';
+
+      state.barInterval = setInterval(() => {
+        const elapsed = (Date.now() - state.startTime) / 1000;
+        state.timeLeft = Math.max(0, Math.ceil(5 - elapsed));
+        $('time-display').textContent = state.timeLeft + 's';
+        const pct = Math.max(0, ((5000 - (Date.now() - state.startTime)) / 5000) * 100);
+        const bar = $('time-bar');
+        bar.style.width = pct + '%';
+        bar.className = 'time-bar' + (pct < 40 ? ' warning' : '') + (pct < 20 ? ' danger' : '');
+      }, 80);
+
+      state.gameInterval = setTimeout(() => endGame(), GAME_DURATION);
+    });
+  }
+
+  function endGame() {
+    clearInterval(state.barInterval);
+    const isRecord = state.currentScore > state.maxScore;
+    if (isRecord) state.maxScore = state.currentScore;
+    state.phase = 'idle';
+
+    const area = $('countdown-area');
+    area.innerHTML = '';
+
+    const resultArea = $('result-area');
+    if (isRecord && state.currentScore > 0) {
+      resultArea.innerHTML = `<div class="result-banner new-record">★ NUEVO RÉCORD: ${state.currentScore} clicks! ★</div>`;
+    } else if (state.currentScore > 0) {
+      const diff = state.maxScore - state.currentScore;
+      resultArea.innerHTML = `<div class="result-banner normal">Puntaje: ${state.currentScore} · Faltan ${diff} para el récord</div>`;
+    } else {
+      resultArea.innerHTML = `<div class="result-banner normal">¡Intentá de nuevo!</div>`;
+    }
+    resultArea.style.display = 'block';
+
+    render();
+    $('time-display').textContent = '—';
+    $('time-bar-wrapper').style.opacity = '0';
+    $('time-bar').style.width = '100%';
+    $('time-bar').className = 'time-bar';
+    $('btn-start').textContent = '▶ JUGAR DE NUEVO';
+  }
+
+  function registerClick(e) {
+    if (state.phase !== 'playing') return;
+    state.currentScore++;
+    $('current-score').textContent = state.currentScore;
+
+    const burst = document.createElement('div');
+    burst.className = 'click-burst';
+    burst.style.left = e.clientX - 3 + 'px';
+    burst.style.top = e.clientY - 3 + 'px';
+    document.body.appendChild(burst);
+    setTimeout(() => burst.remove(), 400);
+  }
+
+  $('btn-start').addEventListener('click', () => {
+    if (state.phase !== 'idle') return;
+    $('result-area').style.display = 'none';
+    $('countdown-area').innerHTML = `<div style="display:flex;gap:6px;align-items:center;"><span class="countdown-dot"></span><span class="countdown-dot"></span><span class="countdown-dot"></span></div>`;
+    startGame();
+  });
+
+  $('btn-click').addEventListener('click', registerClick);
+
+  render();
+</script>
