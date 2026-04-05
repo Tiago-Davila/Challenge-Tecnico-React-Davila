@@ -97,7 +97,6 @@ body {
   letter-spacing: 0.03em;
 }
 
-/* botón de inicio */
 .btn-iniciar {
   display: block;
   width: 100%;
@@ -127,7 +126,6 @@ body {
   cursor: not-allowed;
 }
 
-/* botón principal de click */
 .btn-click {
   display: block;
   width: 100%;
