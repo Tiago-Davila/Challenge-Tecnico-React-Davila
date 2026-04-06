@@ -183,3 +183,8 @@ Abrí el navegador en `http://localhost:5173`
 - La cuenta regresiva se muestra en intervalos de 1 segundo por mensaje. El botón de click se habilita junto con el mensaje "Ya" y el contador de 5 segundos arranca en ese momento.
 - El puntaje máximo persiste solo durante la sesión activa. Al recargar la página vuelve a 0.
 - Los dos botones (iniciar y clickear) son siempre visibles, habilitados o deshabilitados según el estado del juego.
+
+## 📋 Prompts de los modelos de IA
+
+1. Gemini Pro 3.1: https://gemini.google.com/share/a79af42d57e3
+2. Claude Sonnet 4.6: https://claude.ai/share/f5e85088-4768-4df1-bc83-655a6c507625
